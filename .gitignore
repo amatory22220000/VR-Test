@@ -162,3 +162,10 @@ $RECYCLE.BIN/
 # Merge and patch leftovers
 *.orig
 *.rej
+
+# ---------------------------------------------------------------------------
+# Deliberately NOT ignored
+# ---------------------------------------------------------------------------
+# Baked lighting stays in version control — builds ship the bake instead of
+# regenerating it. Do not add ignore rules for:
+#   Lightmap-*.exr, LightingData.asset, ReflectionProbe-*, OcclusionCullingData.asset
