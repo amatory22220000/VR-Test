@@ -1,0 +1,25 @@
+{
+    "name": "Core",
+    "rootNamespace": "MeowStudio",
+    "references": [
+        "GUID:75469ad4d38634e559750d17036d5f7c",
+        "GUID:d0acddb179989574c8355991596bd3e6",
+        "GUID:0d8beb7f090555447a6cf5ce9e54dbb4",
+        "GUID:ad968d605628d06499b62cdc30f11cf8",
+        "GUID:2bafac87e7f4b9b418d9448d219b01ab",
+        "GUID:b93f844d45cfcc44fa2b0eed5c9ec6bb",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:029c1c1b674aaae47a6841a0b89ad80e",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:e0d1d831dad9946988dfbe56f16123b2"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
