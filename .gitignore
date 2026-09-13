@@ -104,3 +104,61 @@ InitTestScene*.unity*
 
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
+
+# ---------------------------------------------------------------------------
+# Editor, OS and tooling files — local to one machine, never shared
+# ---------------------------------------------------------------------------
+
+# Visual Studio Code
+.vscode/
+
+# JetBrains Rider / IntelliJ
+.idea/
+*.iml
+
+# Visual Studio / Visual Studio for Mac
+.vsconfig
+*.userosscache
+*.sln.docstates
+
+# Meta files Unity writes next to the generated project files above.
+# *.csproj / *.sln are already ignored, but any that live under Assets/
+# also get a .meta, which then shows up as a phantom deletion.
+*.csproj.meta
+*.sln.meta
+*.unityproj.meta
+
+# AI coding agents — per-machine settings and caches
+.claude/settings.local.json
+.claude/local/
+.cursor/
+.aider*
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.AppleDouble
+.LSOverride
+.Spotlight-V100
+.Trashes
+Icon?
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+.directory
+.Trash-*
+
+# Editor swap and backup files
+*~
+*.swp
+*.swo
+
+# Merge and patch leftovers
+*.orig
+*.rej
