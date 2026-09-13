@@ -257,7 +257,7 @@ MonoBehaviour:
   m_SnapToColliderVolume: 1
   m_ReinitializeDynamicAttachEverySingleGrab: 1
   m_AttachEaseInTime: 0.15
-  m_MovementType: 0
+  m_MovementType: 1
   m_PredictedVisualsTransform: {fileID: 0}
   m_VelocityDamping: 1
   m_VelocityScale: 1
@@ -312,6 +312,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3962661152235634154}
     m_Modifications:
+    - target: {fileID: 14508148939621440, guid: 1d5be1466e2784acd83cfd29931ab6c9, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.42239344
+      objectReference: {fileID: 0}
+    - target: {fileID: 14508148939621440, guid: 1d5be1466e2784acd83cfd29931ab6c9, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.42239344
+      objectReference: {fileID: 0}
+    - target: {fileID: 14508148939621440, guid: 1d5be1466e2784acd83cfd29931ab6c9, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.42239344
+      objectReference: {fileID: 0}
     - target: {fileID: 907143909418421618, guid: 1d5be1466e2784acd83cfd29931ab6c9, type: 3}
       propertyPath: m_Name
       value: CandleFlame
@@ -322,7 +334,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7281639076528989254, guid: 1d5be1466e2784acd83cfd29931ab6c9, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.886
+      value: 0.9228
       objectReference: {fileID: 0}
     - target: {fileID: 7281639076528989254, guid: 1d5be1466e2784acd83cfd29931ab6c9, type: 3}
       propertyPath: m_LocalPosition.z
