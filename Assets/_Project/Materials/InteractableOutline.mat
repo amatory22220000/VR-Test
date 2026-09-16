@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: FX_CandleGlow
-  m_Shader: {fileID: 4800000, guid: 87fcd3c336abf4ee896561fc48ed0fb4, type: 3}
+  m_Name: InteractableOutline
+  m_Shader: {fileID: 4800000, guid: 419eb37bed15f472781c99688b245dec, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -25,9 +25,8 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
-    - _FalloffPower: 4
-    - _Intensity: 0.5
+    - _OutlineWidth: 0.0025
     m_Colors:
-    - _Color: {r: 1, g: 0.52, b: 0.16, a: 0.45}
+    - _OutlineColor: {r: 0.35, g: 0.85, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
