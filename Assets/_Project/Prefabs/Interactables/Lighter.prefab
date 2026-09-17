@@ -250,7 +250,7 @@ MonoBehaviour:
   flamePrefab: {fileID: 907143909418421618, guid: 1d5be1466e2784acd83cfd29931ab6c9, type: 3}
   anchor: {fileID: 6293415561200203041}
   flameScale: 0.45
-  lightRange: 0.6
+  lightRange: 1.5
   lightIntensity: 0.35
 --- !u!114 &3020281346704572626
 MonoBehaviour:

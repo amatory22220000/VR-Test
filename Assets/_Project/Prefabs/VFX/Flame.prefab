@@ -73,10 +73,10 @@ MonoBehaviour:
   trembleRate: 5
   tremblePerSpeed: 0.6
   blowOutOnFlip: 1
-  blowOutAngle: 90
+  blowOutAngle: 70
   relightAngle: 75
   flipDwell: 0.3
-  blowOutOnSpeed: 0
+  blowOutOnSpeed: 1
   blowOutSpeed: 3.5
   speedDwell: 0.15
   relightWhenUpright: 1

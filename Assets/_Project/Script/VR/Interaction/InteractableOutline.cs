@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
@@ -15,6 +16,11 @@ namespace MeowStudio.VR.Interaction
     /// Toggling swaps a cached array reference - no allocation, no per-object material
     /// instance - so the only runtime cost is a handful of extra unlit, textureless draw
     /// calls while something is actually highlighted, which is negligible even on Quest.
+    ///
+    /// Handles both MeshRenderer and SkinnedMeshRenderer, and both faceted (flat-shaded,
+    /// hard-edge) and smooth-shaded low-poly meshes correctly - see EnsureSmoothNormals.
+    /// Not yet handled: a renderer with more than one submesh only gets an outline around
+    /// its last submesh (a Debug.LogWarning fires when this happens; see GetSubMeshCount).
     /// </summary>
     [RequireComponent(typeof(XRBaseInteractable))]
     public class InteractableOutline: MonoBehaviour
@@ -31,6 +37,11 @@ namespace MeowStudio.VR.Interaction
         private static Material sharedOutlineMaterial;
         private static readonly int OutlineColorId = Shader.PropertyToID("_OutlineColor");
         private static readonly int OutlineWidthId = Shader.PropertyToID("_OutlineWidth");
+
+        // Meshes whose smooth-normal channel has already been baked (see
+        // EnsureSmoothNormals). Keyed by the shared Mesh instance, so this runs once
+        // total no matter how many renderers or interactable instances use it.
+        private static readonly HashSet<Mesh> smoothNormalsBaked = new HashSet<Mesh>();
 
         private XRBaseInteractable interactable;
         private Material[][] plainMaterials;
@@ -61,6 +72,23 @@ namespace MeowStudio.VR.Interaction
 
                 var plain = r.sharedMaterials;
                 plainMaterials[i] = plain;
+
+                EnsureSmoothNormals(GetSharedMesh(r));
+
+                int subMeshCount = GetSubMeshCount(r);
+                if (subMeshCount > 1)
+                {
+                    // Unity only draws extra material-array entries against the LAST
+                    // submesh, so simply appending one material here would trace an
+                    // outline around a single submesh, not the whole object. Handling
+                    // this properly needs a second renderer covering every submesh, not
+                    // yet built - flag it loudly instead of shipping a silently partial
+                    // outline on the next multi-material asset that gets this component.
+                    Debug.LogWarning($"{nameof(InteractableOutline)} on '{name}': renderer '{r.name}' has " +
+                        $"{subMeshCount} submeshes; only the last one will get an outline. " +
+                        "Multi-submesh support isn't implemented yet.", this);
+                }
+
                 if (sharedOutlineMaterial == null) continue;
 
                 var withOutline = new Material[plain.Length + 1];
@@ -113,6 +141,73 @@ namespace MeowStudio.VR.Interaction
         {
             // Still hovered by another interactor (e.g. the other hand) after this one let go.
             if (interactable.isHovered) SetOutline(true);
+        }
+
+        /// <summary>Mesh a renderer actually draws, whichever kind of renderer it is.</summary>
+        private static Mesh GetSharedMesh(Renderer r)
+        {
+            if (r is SkinnedMeshRenderer skinned) return skinned.sharedMesh;
+            var filter = r.GetComponent<MeshFilter>();
+            return filter != null ? filter.sharedMesh : null;
+        }
+
+        private static int GetSubMeshCount(Renderer r)
+        {
+            var mesh = GetSharedMesh(r);
+            return mesh != null ? mesh.subMeshCount : 1;
+        }
+
+        /// <summary>
+        /// Bakes a per-position-averaged normal into TEXCOORD2 for the outline shader to
+        /// extrude along, instead of the mesh's real NORMAL.
+        ///
+        /// Our props are flat-shaded/faceted low-poly: every hard edge has duplicate
+        /// vertices at the same position with different normals. Extruding along the real
+        /// normal pushes the two faces at that edge apart in different directions, so the
+        /// inverted-hull shell tears open there - it only stays sealed where neighbouring
+        /// faces happen to agree, which reads as "some edges outlined, others not" rather
+        /// than a full silhouette. Averaging by position first gives every vertex sharing
+        /// a location the same extrusion direction, so the shell stays continuous at every
+        /// edge regardless of shading.
+        ///
+        /// Runs once per unique Mesh (cached), not per instance or per frame: negligible
+        /// even for many outlined objects, and it never touches the source asset - this
+        /// mutates the runtime-loaded Mesh object, not the file on disk.
+        /// </summary>
+        private static void EnsureSmoothNormals(Mesh mesh)
+        {
+            if (mesh == null || !smoothNormalsBaked.Add(mesh)) return;
+
+            var positions = mesh.vertices;
+            var normals = mesh.normals;
+            if (positions.Length == 0 || normals.Length != positions.Length) return;
+
+            // Group vertices by position (hard-edge duplicates share a location but not
+            // an index), rounding to fold together anything that's the same point up to
+            // floating-point noise.
+            var groups = new Dictionary<Vector3Int, List<int>>();
+            const float unitsPerMeter = 100000f; // 10-micron buckets: plenty for prop-scale meshes
+            for (int i = 0; i < positions.Length; i++)
+            {
+                var p = positions[i];
+                var key = new Vector3Int(
+                    Mathf.RoundToInt(p.x * unitsPerMeter),
+                    Mathf.RoundToInt(p.y * unitsPerMeter),
+                    Mathf.RoundToInt(p.z * unitsPerMeter));
+                if (!groups.TryGetValue(key, out var list)) groups[key] = list = new List<int>();
+                list.Add(i);
+            }
+
+            var smoothed = new Vector3[positions.Length];
+            foreach (var group in groups.Values)
+            {
+                var average = Vector3.zero;
+                foreach (var i in group) average += normals[i];
+                average = average.sqrMagnitude > 1e-10f ? average.normalized : Vector3.up;
+                foreach (var i in group) smoothed[i] = average;
+            }
+
+            mesh.SetUVs(2, new List<Vector3>(smoothed)); // TEXCOORD2: unused by these props (no lightmap/detail UVs)
         }
 
         [Button("Toggle Outline")]
